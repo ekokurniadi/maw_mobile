@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maw/pages/functional.dart';
+import 'package:maw/pages/sales/claim.dart';
 import 'package:maw/pages/sales/doTracking.dart';
 import 'package:maw/pages/sales/sales_tools.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -211,52 +212,56 @@ class _HomeState extends State<Home> {
               ),
             ),
             // pindah
-            Container(
-              padding: EdgeInsets.all(5),
-              child: Row(
-                children: [
-                  Container(
-                    margin: EdgeInsets.all(5),
-                    width: MediaQuery.of(context).size.width / 2.2,
-                    height: MediaQuery.of(context).size.height * 0.20,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 3,
-                          blurRadius: 2,
-                          offset: Offset(0, 2), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(width: 80, height: 80, child: image3),
-                              Container(
-                                child: Text(
-                                  "Claim Management",
-                                  style: GoogleFonts.poppins(
-                                      color: Color(0xFF2c406e),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15),
-                                ),
-                              ),
-                            ],
-                          )
+            GestureDetector(
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Claim())),
+              child: Container(
+                padding: EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(5),
+                      width: MediaQuery.of(context).size.width / 2.2,
+                      height: MediaQuery.of(context).size.height * 0.20,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 3,
+                            blurRadius: 2,
+                            offset: Offset(0, 2), // changes position of shadow
+                          ),
                         ],
                       ),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(width: 80, height: 80, child: image3),
+                                Container(
+                                  child: Text(
+                                    "Claim Management",
+                                    style: GoogleFonts.poppins(
+                                        color: Color(0xFF2c406e),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             // pindah

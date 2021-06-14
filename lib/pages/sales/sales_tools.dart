@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maw/pages/sales/customerDatabase.dart';
 import 'package:maw/pages/sales/katalog.dart';
+import 'package:maw/pages/sales/price_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SalesTools extends StatefulWidget {
@@ -183,44 +184,48 @@ class _SalesToolsState extends State<SalesTools> {
                       ),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.all(5),
-                    width: MediaQuery.of(context).size.width / 2.2,
-                    height: MediaQuery.of(context).size.height * 0.20,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 3,
-                          blurRadius: 2,
-                          offset: Offset(0, 2), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(width: 80, height: 80, child: image2),
-                              Container(
-                                child: Text(
-                                  "Price List",
-                                  style: GoogleFonts.poppins(
-                                      color: Color(0xFF2c406e),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15),
-                                ),
-                              ),
-                            ],
-                          )
+                  GestureDetector(
+                    onTap: ()=> Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PriceList())),
+                    child: Container(
+                      margin: EdgeInsets.all(5),
+                      width: MediaQuery.of(context).size.width / 2.2,
+                      height: MediaQuery.of(context).size.height * 0.20,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 3,
+                            blurRadius: 2,
+                            offset: Offset(0, 2), // changes position of shadow
+                          ),
                         ],
+                      ),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(width: 80, height: 80, child: image2),
+                                Container(
+                                  child: Text(
+                                    "Price List",
+                                    style: GoogleFonts.poppins(
+                                        color: Color(0xFF2c406e),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -325,8 +330,10 @@ class _SalesToolsState extends State<SalesTools> {
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: ()=>Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => CustomerDatabase())),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CustomerDatabase())),
                     child: Container(
                       margin: EdgeInsets.all(5),
                       width: MediaQuery.of(context).size.width / 2.2,
