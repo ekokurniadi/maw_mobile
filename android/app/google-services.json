@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "338758396124",
+    "project_id": "multiandalanwisesa-36fef",
+    "storage_bucket": "multiandalanwisesa-36fef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:338758396124:android:cfab4c3479777290996c19",
+        "android_client_info": {
+          "package_name": "com.multiandalanwisesa.maw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "338758396124-553hcps1mjq5l82us821nufocqvq0l62.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPVpUFmuunUm6b8KitXZgnvTwsk7MkIG0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "338758396124-553hcps1mjq5l82us821nufocqvq0l62.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
