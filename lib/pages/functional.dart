@@ -5,8 +5,9 @@ import '../helper.dart';
 import 'dart:convert';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
-
+import 'package:intl/intl.dart';
 final Helper helper = Helper();
+DateTime _dateTime = DateTime.now();
 
 class Functional {
   void sendLocation() async {
@@ -27,6 +28,9 @@ class Functional {
       "latitude": position.latitude.toString(),
       "longitude": position.longitude.toString(),
       "currentloc": alamat.addressLine.toString(),
+      "update_lokasi_at":DateFormat('yyyy-MM-dd H:mm:ss')
+                        .format(_dateTime)
+                        .toString()
     });
     final res = jsonDecode(response.body);
     // print(res);
