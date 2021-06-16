@@ -3,9 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:maw/pages/sales/modalCust.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'dart:convert';
 import '../../config.dart';
+import '../../helper.dart';
 import 'package:http/http.dart' as http;
 
 class FormPengajuan extends StatefulWidget {
@@ -23,10 +25,16 @@ class _FormPengajuanState extends State<FormPengajuan> {
   String errMessage = 'Error Uploading Image';
   TextEditingController _tanggalSurvey = TextEditingController();
   TextEditingController _customer = TextEditingController();
+  TextEditingController _noDo = TextEditingController();
+  TextEditingController _noPO = TextEditingController();
+  TextEditingController _barang = TextEditingController();
+  TextEditingController _kuantitas = TextEditingController();
+  TextEditingController _kondisiBarang = TextEditingController();
   ScrollController _scrollController = new ScrollController();
   int page = 10;
   bool isLoading = false;
-  String text="";
+  String text = "";
+  final Helper helper = Helper();
   List<dynamic> dataCustomer;
   getMoreData(int index) async {
     if (!isLoading) {
@@ -85,6 +93,14 @@ class _FormPengajuanState extends State<FormPengajuan> {
     super.dispose();
   }
 
+  chooseImage() {
+    setState(() {
+      // ignore: deprecated_member_use
+      file = ImagePicker.pickImage(source: ImageSource.gallery);
+    });
+    setStatus('');
+  }
+
   chooseImages() {
     setState(() {
       // ignore: deprecated_member_use
@@ -130,6 +146,37 @@ class _FormPengajuanState extends State<FormPengajuan> {
     );
   }
 
+  upload() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var idUser = pref.getString("id");
+    String linkToServer = "saveClaim";
+    String fileName = tmpFile.path.split('/').last;
+
+    http.post(Config.BASE_URL + linkToServer, body: {
+      "image": base64Image,
+      "name": fileName,
+      "sales_id": idUser,
+      "tanggal_pengajuan": "$_selectDateSurvey",
+      "no_do": _noDo.text.toString(),
+      "no_po": _noPO.text.toString(),
+      "customer": _customer.text.toString(),
+      "kuantitas": _kuantitas.text.toString(),
+      "barang": _barang.text.toString(),
+      "kondisi_barang": _kondisiBarang.text.toString(),
+      "status": "Pengajuan",
+    }).then((result) {
+      final data = jsonDecode(result.body);
+      setStatus(result.statusCode == 200 ? data['pesan'] : errMessage);
+      if (data['status'] == "1") {
+        helper.alertSuccess(data['message'], context);
+      } else {
+        helper.alertError(data['message'], context);
+      }
+    }).catchError((error) {
+      setStatus(error);
+    });
+  }
+
   void updateInformation(String information) {
     setState(() => text = information);
     setState(() {
@@ -139,7 +186,6 @@ class _FormPengajuanState extends State<FormPengajuan> {
   }
 
   void moveToSecondPage() async {
-    
     final information = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -216,6 +262,7 @@ class _FormPengajuanState extends State<FormPengajuan> {
                       title: Container(
                         width: MediaQuery.of(context).size.width,
                         child: TextField(
+                          controller: _noDo,
                           style: GoogleFonts.poppins(),
                           decoration: InputDecoration(
                             labelText: "No. DO",
@@ -252,7 +299,7 @@ class _FormPengajuanState extends State<FormPengajuan> {
                         width: MediaQuery.of(context).size.width,
                         child: TextField(
                           // expands: true,
-
+                          controller: _noPO,
                           style: GoogleFonts.poppins(),
                           decoration: InputDecoration(
                             labelText: "No. PO",
@@ -327,7 +374,7 @@ class _FormPengajuanState extends State<FormPengajuan> {
                         width: MediaQuery.of(context).size.width,
                         child: TextField(
                           // expands: true,
-
+                          controller: _barang,
                           style: GoogleFonts.poppins(),
                           decoration: InputDecoration(
                             labelText: "Barang",
@@ -363,6 +410,44 @@ class _FormPengajuanState extends State<FormPengajuan> {
                       title: Container(
                         width: MediaQuery.of(context).size.width,
                         child: TextField(
+                          // expands: true,
+                          controller: _kuantitas,
+                          style: GoogleFonts.poppins(),
+                          decoration: InputDecoration(
+                            labelText: "Kuantitas",
+                            labelStyle: TextStyle(
+                              color: Color(0xFF70747F),
+                            ),
+                            hintText: "Kuantitas",
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2,
+                                color: Color(0xFFC9CFDF),
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.only(
+                                left: 0.0, bottom: 0.0, top: 0.0),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2,
+                                color: Color(0xFFC9CFDF),
+                              ),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2,
+                                color: Color(0xFFC9CFDF),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      title: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: TextField(
+                          controller: _kondisiBarang,
                           //expands: true,
                           maxLines: 2,
                           minLines: 2,
@@ -445,6 +530,7 @@ class _FormPengajuanState extends State<FormPengajuan> {
                                 }
                               },
                             ),
+                            SizedBox(height:10),
                             Row(
                               children: [
                                 Padding(
@@ -463,6 +549,30 @@ class _FormPengajuanState extends State<FormPengajuan> {
                                       child: Center(
                                         child: Text(
                                           "From Camera",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 5.0,
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      chooseImage();
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(10.0),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFC9CFDF),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "From Gallery",
                                           style: TextStyle(
                                             color: Colors.black,
                                           ),
