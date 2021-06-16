@@ -146,7 +146,7 @@ class _FormPengajuanState extends State<FormPengajuan> {
     );
   }
 
-  upload() async {
+  createAction() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var idUser = pref.getString("id");
     String linkToServer = "saveClaim";
@@ -167,8 +167,9 @@ class _FormPengajuanState extends State<FormPengajuan> {
     }).then((result) {
       final data = jsonDecode(result.body);
       setStatus(result.statusCode == 200 ? data['pesan'] : errMessage);
-      if (data['status'] == "1") {
+      if (data['status'] == 200) {
         helper.alertSuccess(data['message'], context);
+        Navigator.pop(context);
       } else {
         helper.alertError(data['message'], context);
       }
@@ -603,7 +604,7 @@ class _FormPengajuanState extends State<FormPengajuan> {
                           flex: 1,
                           child: InkWell(
                             onTap: () {
-                              Navigator.pop(context);
+                              createAction();
                             },
                             child: Container(
                               width: double.infinity,
