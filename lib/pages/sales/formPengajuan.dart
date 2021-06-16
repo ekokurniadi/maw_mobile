@@ -115,60 +115,71 @@ class _FormPengajuanState extends State<FormPengajuan> {
     });
   }
 
-  Widget showImage() {
+  showImage() {
     return FutureBuilder<File>(
       future: file,
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            null != snapshot.data) {
-          tmpFile = snapshot.data;
-          base64Image = base64Encode(snapshot.data.readAsBytesSync());
-          return Container(
-            width: MediaQuery.of(context).size.width,
-            height: 150,
-            child: Image.file(
-              snapshot.data,
-              fit: BoxFit.fill,
-            ),
-          );
-        } else if (null != snapshot.error) {
-          return const Text(
-            'Error Picking Image',
-            textAlign: TextAlign.center,
-          );
+        if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              null != snapshot.data) {
+            tmpFile = snapshot.data;
+            base64Image = base64Encode(snapshot.data.readAsBytesSync());
+
+            return Container(
+              padding: EdgeInsets.all(15),
+              height: 200,
+              width: 200,
+              child: Image.file(
+                snapshot.data,
+                fit: BoxFit.fill,
+              ),
+            );
+          } else if (null != snapshot.error) {
+            return const Text(
+              'Error Picking Image',
+              textAlign: TextAlign.center,
+            );
+          } else {
+            return const Text(
+              'No Image Selected',
+              textAlign: TextAlign.center,
+            );
+          }
         } else {
-          return const Text(
-            'No Image Selected',
-            textAlign: TextAlign.center,
-          );
+          return CircularProgressIndicator();
         }
       },
     );
   }
 
   createAction() async {
+    setStatus('Uploading Image...');
+    if (null == tmpFile) {
+      setStatus(errMessage);
+      return;
+    }
     SharedPreferences pref = await SharedPreferences.getInstance();
     var idUser = pref.getString("id");
     String linkToServer = "saveClaim";
     String fileName = tmpFile.path.split('/').last;
-
+    print(_tanggalSurvey.text.toString());
     http.post(Config.BASE_URL + linkToServer, body: {
       "image": base64Image,
       "name": fileName,
-      "sales_id": idUser,
-      "tanggal_pengajuan": "$_selectDateSurvey",
-      "no_do": _noDo.text.toString(),
-      "no_po": _noPO.text.toString(),
-      "customer": _customer.text.toString(),
-      "kuantitas": _kuantitas.text.toString(),
-      "barang": _barang.text.toString(),
-      "kondisi_barang": _kondisiBarang.text.toString(),
+      "sales_id": idUser.toString(),
+      "tanggal_pengajuan": "$selectedDateSurvey",
+      "no_do": _noDo.text,
+      "no_po": _noPO.text,
+      "customer": _customer.text,
+      "kuantitas": _kuantitas.text,
+      "barang": _barang.text,
+      "kondisi_barang": _kondisiBarang.text,
       "status": "Pengajuan",
     }).then((result) {
       final data = jsonDecode(result.body);
       setStatus(result.statusCode == 200 ? data['pesan'] : errMessage);
       if (data['status'] == 200) {
-        helper.alertSuccess(data['message'], context);
+        helper.alertLog(data['message']);
         Navigator.pop(context);
       } else {
         helper.alertError(data['message'], context);
@@ -411,6 +422,7 @@ class _FormPengajuanState extends State<FormPengajuan> {
                       title: Container(
                         width: MediaQuery.of(context).size.width,
                         child: TextField(
+                          keyboardType: TextInputType.number,
                           // expands: true,
                           controller: _kuantitas,
                           style: GoogleFonts.poppins(),
@@ -483,6 +495,7 @@ class _FormPengajuanState extends State<FormPengajuan> {
                         ),
                       ),
                     ),
+                    showImage(),
                     ListTile(
                       title: Container(
                         width: MediaQuery.of(context).size.width,
@@ -500,38 +513,7 @@ class _FormPengajuanState extends State<FormPengajuan> {
                                 ),
                               ),
                             ),
-                            FutureBuilder<File>(
-                              future: file,
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<File> snapshot) {
-                                if (snapshot.connectionState ==
-                                        ConnectionState.done &&
-                                    null != snapshot.data) {
-                                  tmpFile = snapshot.data;
-                                  base64Image = base64Encode(
-                                      snapshot.data.readAsBytesSync());
-                                  return Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 150,
-                                    child: Image.file(
-                                      snapshot.data,
-                                      fit: BoxFit.fill,
-                                    ),
-                                  );
-                                } else if (null != snapshot.error) {
-                                  return const Text(
-                                    'Error Picking Image',
-                                    textAlign: TextAlign.center,
-                                  );
-                                } else {
-                                  return const Text(
-                                    'No Image Selected',
-                                    textAlign: TextAlign.center,
-                                  );
-                                }
-                              },
-                            ),
-                            SizedBox(height:10),
+                            SizedBox(height: 10),
                             Row(
                               children: [
                                 Padding(

@@ -28,7 +28,7 @@ class _ClaimState extends State<Claim> {
   String errMessage = 'Error Uploading Image';
   ScrollController _scrollController = new ScrollController();
   int page = 10;
-  bool isLoading=false;
+  bool isLoading = false;
   Future<String> getTask(String filter) async {
     final response =
         await http.post(Config.BASE_URL + "getClaim", body: {"filter": filter});
@@ -39,24 +39,25 @@ class _ClaimState extends State<Claim> {
     print(dataList);
     return "Success";
   }
-  List<dynamic>dataCustomer;
-  getMoreData(int index) async{
-    if(!isLoading){
+
+  List<dynamic> dataCustomer;
+  getMoreData(int index) async {
+    if (!isLoading) {
       setState(() {
-        isLoading=true;
+        isLoading = true;
       });
-      var url = await http.post(Config.BASE_URL +"fetch_data",body:{
-        "start":"0",
-        "length":index.toString(),
-        "draw":"1",
-        "search":"",
-        "searching":"$filter",
+      var url = await http.post(Config.BASE_URL + "fetch_data", body: {
+        "start": "0",
+        "length": index.toString(),
+        "draw": "1",
+        "search": "",
+        "searching": "$filter",
       });
       // final response = jsonDecode(url.body);
-       Map<String, dynamic> response = jsonDecode(url.body);
+      Map<String, dynamic> response = jsonDecode(url.body);
       print(response);
       setState(() {
-        isLoading=false;
+        isLoading = false;
         page++;
       });
     }
@@ -67,12 +68,13 @@ class _ClaimState extends State<Claim> {
     super.initState();
     getTask("");
     controllerSearchValue = true;
-     getMoreData(page);
-     _scrollController.addListener(() { 
-       if(_scrollController.position.pixels ==_scrollController.position.maxScrollExtent){
-         getMoreData(page);
-       }
-     });
+    getMoreData(page);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        getMoreData(page);
+      }
+    });
   }
 
   _selectDateSurvey(BuildContext context) async {
@@ -271,25 +273,24 @@ class _ClaimState extends State<Claim> {
                               width: MediaQuery.of(context).size.width,
                               child: TextField(
                                 onTap: () => {
-                                   showModalBottomSheet(
+                                  showModalBottomSheet(
                                       context: context,
                                       isScrollControlled: true,
                                       builder: (context) {
                                         return Column(
                                           children: [
-
                                             ListView.builder(
-                                              
                                                 scrollDirection: Axis.vertical,
                                                 controller: _scrollController,
                                                 shrinkWrap: true,
                                                 itemCount: dataCustomer.length,
                                                 physics: ScrollPhysics(),
-                                                itemBuilder: (BuildContext context,
-                                                    int index) {
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
                                                   return ListTile(
-                                                    leading: new Icon(
-                                                        Icons.check_circle_outline),
+                                                    leading: new Icon(Icons
+                                                        .check_circle_outline),
                                                     title: new Text(
                                                         dataCustomer[index][1]),
                                                     onTap: () {
